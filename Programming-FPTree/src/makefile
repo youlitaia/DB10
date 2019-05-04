@@ -24,27 +24,34 @@ PALLOCATOR = pallocator.o
 
 CLHASH = clhash.o
 
-ALL := $(LYCSB) $(YCSB) $(MAIN) $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH)
+#ALL := $(LYCSB) $(YCSB) $(MAIN) $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH)
 
 #============================TODO: all below============================
-$(MAIN) :
+#$(MAIN) :
 
-$(FPTREE) : 
+#$(FPTREE) : 
 
-$(UTILITY) :
+#$(UTILITY) :
 
-$(PALLOCATOR) : 
+#$(PALLOCATOR) : pallocator.cpp $(HEADER_DIR)/utility/pallocator.h $(HEADER_DIR)/utility/utility.h
+#	$(CXX) $(CXXFLAGS) -c pallocator.cpp -I $(HEADER_DIR) -o $@ -lpmem
 
-$(CLHASH) : clhash.c $(HEADER_DIR)/utility/clhash.h
-	$(CC) $(CFLAGS) -c clhash.c -I $(HEADER_DIR) -g -o $@
+$(LYCSB) : lycsb.cpp $(BIN)
+	$(CXX) $(CXXFLAGS) lycsb.cpp -o $@ -lleveldb -lpthread
+
+#$(YCSB) :
+
+#$(CLHASH) : clhash.c $(HEADER_DIR)/utility/clhash.h
+#	$(CC) $(CFLAGS) -c clhash.c -I $(HEADER_DIR) -g -o $@
 
 $(BIN):
-	mkdir -p bin
+	@mkdir -p bin
 
 all : $(ALL)
 
 clean :
 	rm -rf *.o ./bin/* ../data/*
+	rm -rf bin
 
 cleand : 
 	rm -rf ../data/*
