@@ -157,9 +157,11 @@ public:
 
     int         findFirstZero();
     int         getBit(const int& idx);
+    void        setBit(const int& idx);
+    void        resetBit(const int& idx);
     Key         getKey(const int& idx);
     Value       getValue(const int& idx);
-    PPointer    getPPointer();
+    PPointer&    getPPointer();
 
     // interface with NVM
     void        persist();
@@ -186,4 +188,5 @@ public:
     void       printTree();
 
     bool       bulkLoading();
+    uint64_t   getDegree();
 };

@@ -3,7 +3,18 @@
 #include"fptree/fptree.h"
 
 using namespace std;
-
+const string catalogPath = DATA_DIR + "p_allocator_catalog";
+const string freePath = DATA_DIR + "free_list";
+void removeFile() {
+    uint64_t maxfile = PAllocator::getAllocator()->getMaxFileId();
+    PAllocator::getAllocator()->~PAllocator();
+    for(uint64_t i=1;i<maxfile;++i){
+    const string file = DATA_DIR + to_string(i);
+    remove(file.c_str());
+    }
+    remove(catalogPath.c_str());
+    remove(freePath.c_str());
+}
 void testSplit() {
     FPTree* tree = new FPTree(4);
 
