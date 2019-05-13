@@ -6,9 +6,9 @@ Author: Ben Tsai ( @BenTsai7 )
 Descrption: implementation of FPTREE
     OKAY: INSERT
           BULKLOADING
+          UPDATE
 
-    TODO: UPDATE
-          DELETE
+    TODO: DELETE
           REDISTRIBUTE
 **/
 #include"fptree/fptree.h"
@@ -287,7 +287,9 @@ void InnerNode::removeChild(const int& keyIdx, const int& childIdx) {
 // update the target entry, return true if the update succeed.
 bool InnerNode::update(const Key& k, const Value& v) {
     // TODO
-    return false;
+    if(nKeys==0&&nChild==0) return false;
+    int idx=findIndex(k);
+    return childrens[idx]->update(k,v);
 }
 
 // find the target value with the search key, return MAX_VALUE if it fails.
@@ -545,6 +547,17 @@ bool LeafNode::remove(const Key& k, const int& index, InnerNode* const& parent, 
 bool LeafNode::update(const Key& k, const Value& v) {
     bool ifUpdate = false;
     // TODO
+    int hash = keyHash(k);
+    for(int i=0;i<2*degree;++i){
+        if(getBit(i)==1&&(fingerprints[i]==hash)){
+            if(getKey(i)==k){
+                kv[i].v=v;
+                ifUpdate=true;
+                break;
+            }
+        }
+    } 
+    persist();
     return ifUpdate;
 }
 
