@@ -171,7 +171,7 @@ bool PAllocator::ifLeafUsed(PPointer p) {
     char* addr = iter->second;
     int p_num=(p.offset-LEAF_GROUP_HEAD)/calLeafSize();//caculate the position of this leaf and set bitmap to use
     addr = addr + 8 + p_num; //to bitmap;
-    return *addr==0; //0 in bitmap presents free leaf.
+    return *addr==1; //0 in bitmap presents free leaf.
 }
 
 bool PAllocator::ifLeafFree(PPointer p){
@@ -190,12 +190,11 @@ bool PAllocator::ifLeafExist(PPointer p) {
 bool PAllocator::freeLeaf(PPointer p) {
     // TODO
     if(!ifLeafExist(p)) return false;
-    if(!ifLeafFree(p)) return false;
+    if(ifLeafFree(p)) return false;
     //edit bitmap in leaf group
     map<uint64_t, char*>::iterator iter=fId2PmAddr.find(p.fileId);
     if(iter==fId2PmAddr.end()) return false;
     if(p.offset>LEAF_GROUP_HEAD+(LEAF_GROUP_AMOUNT-1)*calLeafSize()) return false;
-
     char* addr = iter->second;
     char* lgaddr=addr;
     uint64_t usedNum;
@@ -205,7 +204,7 @@ bool PAllocator::freeLeaf(PPointer p) {
     memcpy(addr,&usedNum,sizeof(uint64_t));
     int p_num=(p.offset-LEAF_GROUP_HEAD)/calLeafSize();//caculate the position of this leaf and set bitmap to use
     addr = addr + 8 + p_num; //to bitmap;
-    *addr=1;
+    *addr=0;
     int leaf_group_len = 8 + LEAF_GROUP_AMOUNT + LEAF_GROUP_AMOUNT*calLeafSize();
     pmem_msync(lgaddr,leaf_group_len);//write back to files and update the whole leaf group
     freeList.push_back(p);
