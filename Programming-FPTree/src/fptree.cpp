@@ -1,15 +1,13 @@
 /**
 fptree.cpp
 
-Author: Ben Tsai ( @BenTsai7 )
-
 Descrption: implementation of FPTREE
     OKAY: INSERT
           BULKLOADING
           UPDATE
-
-    TODO: DELETE
+          DELETE
           REDISTRIBUTE
+    ALL DONE
 **/
 #include"fptree/fptree.h"
 #include<assert.h>

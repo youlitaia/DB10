@@ -24,7 +24,7 @@ PALLOCATOR = p_allocator.o
 
 CLHASH = clhash.o
 
-ALL :=  $(LYCSB) $(MAIN) #$(YCSB) $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH)
+ALL :=  $(LYCSB) $(MAIN) $(YCSB)
 #============================TODO: all below============================
 
 all : $(ALL)
@@ -38,11 +38,9 @@ mount :
 	sudo mount -o dax /dev/pmem0 ./bin/data
 	sudo chmod -R 0777 ./bin/data
 
-$(MAIN) : $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) $(BIN)
+$(MAIN) : $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) $(BIN) mount
 	$(CXX) $(CXXFLAGS) -c main.cpp -I $(HEADER_DIR) -o main.o
 	$(CXX) $(CXXFLAGS) -I$(HEADER_DIR)  $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) main.o -o  $@  -lpmem
-	make mount
-	@-rm -rf *.o
 
 $(FPTREE) : fptree.cpp p_allocator.cpp
 	@$(CXX) $(CXXFLAGS) -c fptree.cpp -I $(HEADER_DIR) -o $@ -lpmem
@@ -56,11 +54,11 @@ $(PALLOCATOR) : p_allocator.cpp $(HEADER_DIR)/utility/p_allocator.h $(HEADER_DIR
 $(LYCSB) : $(BIN) lycsb.cpp
 	@$(CXX) $(CXXFLAGS) lycsb.cpp -o $@ -lleveldb -lpthread
 
-#$(YCSB) : ycsb.cpp $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH)
-#	@mkdir -p bin/data
-#	@make mount
-#	@$(CXX) $(CXXFLAGS) -c ycsb.cpp -I$(HEADER_DIR) -o ycsb.o -lpmem -lleveldb -lpthread
-#	@$(CXX) $(CXXFLAGS) -I$(HEADER_DIR) ycsb.o  $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) -o  $@ -lpmem -lleveldb -lpthread
+$(YCSB) : ycsb.cpp $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) $(MAIN) mount
+	@mkdir -p bin/data
+	@$(CXX) $(CXXFLAGS) -c ycsb.cpp -I$(HEADER_DIR) -o ycsb.o -lpmem -lleveldb -lpthread
+	@$(CXX) $(CXXFLAGS) -I$(HEADER_DIR) ycsb.o  $(FPTREE) $(UTILITY) $(PALLOCATOR) $(CLHASH) -o  $@ -lpmem -lleveldb -lpthread
+	@-rm -rf *.o
 
 $(CLHASH) : clhash.c $(HEADER_DIR)/utility/clhash.h
 	@$(CC) $(CFLAGS) -c clhash.c -I $(HEADER_DIR) -g -o $@
