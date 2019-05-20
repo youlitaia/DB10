@@ -1,6 +1,15 @@
+/**
+lycsb.cpp
+
+Author: Ben Tsai ( @BenTsai7 )
+
+Descrption:run leveldb and fptree, test them with YCSB Benchmark workloads
+
+**/
 #include "fptree/fptree.h"
 #include <leveldb/db.h>
 #include <string>
+#include <stdlib.h>
 
 #define KEY_LEN 8
 #define VALUE_LEN 8
@@ -8,11 +17,24 @@ using namespace std;
 
 const string workload = "../../workloads/"; // TODO: the workload folder filepath
 
-const string load = workload + "1w-rw-50-50-load.txt"; // TODO: the workload_load filename
-const string run  = workload + "1w-rw-50-50-run.txt"; // TODO: the workload_run filename
+const string load = workload + "10w-rw-50-50-load.txt"; // TODO: the workload_load filename
+const string run  = workload + "10w-rw-50-50-run.txt"; // TODO: the workload_run filename
 
-const int READ_WRITE_NUM = 10000; // TODO: amount of operations
+const int READ_WRITE_NUM = 100000; // TODO: amount of operations
 
+const string catalogPath = DATA_DIR + "p_allocator_catalog";
+const string freePath = DATA_DIR + "free_list";
+void removeFile(){
+	uint64_t maxfile = PAllocator::getAllocator()->getMaxFileId();
+    PAllocator::getAllocator()->~PAllocator();
+    for(uint64_t i=1;i<maxfile;++i){
+    const string file = DATA_DIR + to_string(i);
+    remove(file.c_str());
+    }
+    remove(catalogPath.c_str());
+    remove(freePath.c_str());
+	system("rm -rf leveldb");	
+};
 int main()
 {        
     FPTree fptree(1028);
@@ -190,5 +212,6 @@ int main()
     printf("Run phase throughput: %f operations per second \n", READ_WRITE_NUM/single_time);
     fclose(ycsb_load);
     fclose(ycsb_run);
+    removeFile();
     return 0;
 }

@@ -211,7 +211,7 @@ KeyNode* InnerNode::split() {
     // TODO
     //left: d keys d pointers   right: d keys d pointers, push up the d+1th key 
     int d=nKeys/2;
-    int newMidKey=keys[d];
+    Key newMidKey=keys[d];
     InnerNode* newNode = new InnerNode(d,tree,false);
     newNode->nKeys=d;
     newNode->nChild=d+1;
@@ -659,7 +659,7 @@ KeyNode* LeafNode::split() {
     //LeafNode split when n = 2*d-1;
     LeafNode* newLeaf = new LeafNode(tree);
     memset(bitmap,0,bitmapSize);
-    int midkey=findSplitKey();
+    Key midkey=findSplitKey();
     for(int i=0;i<n/2;++i){ //original leaf
         fingerprints[i]=keyHash(getKey(i));
         setBit(i);
