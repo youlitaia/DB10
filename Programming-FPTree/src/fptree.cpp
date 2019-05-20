@@ -352,7 +352,7 @@ void InnerNode::mergeParentRight(InnerNode* const& parent, InnerNode* const& rig
     // TODO
     auto midKey = parent->getKey(0);
     int rightKeyNum = rightBro->getKeyNum();
-    int rightChildNum = rightBro->getChildNum();
+    //int rightChildNum = rightBro->getChildNum();
     //adjust space for new come
     for (int i = 0; i < nKeys; i ++)
         parent->keys[i] = this->keys[i];
@@ -411,10 +411,10 @@ void InnerNode::redistributeRight(const int& index, InnerNode* const& rightBro, 
     // TODO
     //origin num
     int right_nChild = rightBro->getChildNum();
-    int right_nKeys = rightBro->getKeyNum();
+    //int right_nKeys = rightBro->getKeyNum();
     //get both node child num after adjust
     int nRight = (right_nChild + nChild + 1) / 2;
-    int nThis = (right_nChild + nChild) / 2;
+    //int nThis = (right_nChild + nChild) / 2;
     //pull down the middle key
     keys[this->nKeys] = parent->getKey(index);
     parent->keys[index] = rightBro->getKey(right_nChild - nRight - 1);
@@ -603,7 +603,7 @@ LeafNode::LeafNode(PPointer p, FPTree* t) {
     //count n
     cursor=bitmap;
     n=0;
-    for(int i=0;i<bitmapSize;++i){
+    for(uint64_t i=0;i<bitmapSize;++i){
         n+=countOneBits(*cursor);
         cursor+=1;
     }
