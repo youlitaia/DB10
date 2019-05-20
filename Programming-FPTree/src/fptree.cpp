@@ -211,7 +211,7 @@ KeyNode* InnerNode::split() {
     // TODO
     //left: d keys d pointers   right: d keys d pointers, push up the d+1th key 
     int d=nKeys/2;
-    int newMidKey=keys[d];
+    Key newMidKey=keys[d];
     InnerNode* newNode = new InnerNode(d,tree,false);
     newNode->nKeys=d;
     newNode->nChild=d+1;
@@ -352,7 +352,7 @@ void InnerNode::mergeParentRight(InnerNode* const& parent, InnerNode* const& rig
     // TODO
     auto midKey = parent->getKey(0);
     int rightKeyNum = rightBro->getKeyNum();
-    int rightChildNum = rightBro->getChildNum();
+    //int rightChildNum = rightBro->getChildNum();
     //adjust space for new come
     for (int i = 0; i < nKeys; i ++)
         parent->keys[i] = this->keys[i];
@@ -411,10 +411,10 @@ void InnerNode::redistributeRight(const int& index, InnerNode* const& rightBro, 
     // TODO
     //origin num
     int right_nChild = rightBro->getChildNum();
-    int right_nKeys = rightBro->getKeyNum();
+    //int right_nKeys = rightBro->getKeyNum();
     //get both node child num after adjust
     int nRight = (right_nChild + nChild + 1) / 2;
-    int nThis = (right_nChild + nChild) / 2;
+    //int nThis = (right_nChild + nChild) / 2;
     //pull down the middle key
     keys[this->nKeys] = parent->getKey(index);
     parent->keys[index] = rightBro->getKey(right_nChild - nRight - 1);
@@ -603,7 +603,7 @@ LeafNode::LeafNode(PPointer p, FPTree* t) {
     //count n
     cursor=bitmap;
     n=0;
-    for(int i=0;i<bitmapSize;++i){
+    for(uint64_t i=0;i<bitmapSize;++i){
         n+=countOneBits(*cursor);
         cursor+=1;
     }
@@ -659,7 +659,7 @@ KeyNode* LeafNode::split() {
     //LeafNode split when n = 2*d-1;
     LeafNode* newLeaf = new LeafNode(tree);
     memset(bitmap,0,bitmapSize);
-    int midkey=findSplitKey();
+    Key midkey=findSplitKey();
     for(int i=0;i<n/2;++i){ //original leaf
         fingerprints[i]=keyHash(getKey(i));
         setBit(i);

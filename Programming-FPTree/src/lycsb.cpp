@@ -8,7 +8,7 @@ Descrption:run leveldb and test it with YCSB Benchmark workloads
 **/
 #include <leveldb/db.h>
 #include <string>
-
+#include <stdlib.h>
 #define KEY_LEN 8
 #define VALUE_LEN 8
 using namespace std;
@@ -21,7 +21,9 @@ const string run  = workload + "220w-rw-50-50-run.txt"; // TODO: the workload_ru
 const string filePath = "leveldb";
 
 const int READ_WRITE_NUM = 350000; // TODO: how many operations
-
+void removeFile(){
+	system("rm -rf leveldb");	
+};
 int main()
 {        
     leveldb::DB* db;
@@ -141,6 +143,7 @@ int main()
 	clock_gettime(CLOCK_MONOTONIC, &finish);
 	single_time = (finish.tv_sec - start.tv_sec) + (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
     printf("Run phase finishes: %lu/%lu items are inserted/searched\n", operation_num - inserted, inserted);
-    printf("Run phase throughput: %f operations per second \n", READ_WRITE_NUM/single_time);	
+    printf("Run phase throughput: %f operations per second \n", READ_WRITE_NUM/single_time);
+    removeFile();
     return 0;
 }

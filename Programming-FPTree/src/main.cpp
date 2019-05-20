@@ -50,4 +50,5 @@ int main() {
     end = clock();
     double t_dur = end - start;
     cout << "Find Used Time = " << (t_dur / CLOCKS_PER_SEC) << endl;
+    removeFile();
 }
